@@ -1,0 +1,9 @@
+cl -MD -O2 ^
+	main.c ^
+	-link ^
+	kernel32.lib ^
+	user32.lib ^
+	ole32.lib ^
+	-out:OpenFolderAndSelect.exe ^
+	-entry:RawMain ^
+	-subsystem:windows
