@@ -4,6 +4,11 @@
 #include <Windows.h>
 #include <shlobj.h>
 
+#define CONCAT__(x,y)  x ## y
+#define CONCAT(x,y)    CONCAT__(x, y)
+#define L_(x)  CONCAT(L, x)
+#define BUILD_TIME   L_(__DATE__) L" " L_(__TIME__)
+
 static HRESULT My_SHOpenFolderAndSelectItems(
 	LPCITEMIDLIST pidlItemOrParent, UINT itemCount,
 	LPCITEMIDLIST* itemPidls, DWORD flags)
@@ -51,14 +56,30 @@ static WCHAR ** MyCommandLineToArgvW(WCHAR *pszCmdl, int *pCount)
 	return NULL;
 }
 
+static void replace_dquote_to_bslash(WCHAR *p)
+{
+	for (; *p; ++p)
+	{
+		if (*p == '"') *p = '\\';
+	}
+}
+
 void RawMain(void)
 {
 	int argc = 0;
 	WCHAR **argv = MyCommandLineToArgvW(GetCommandLineW(), &argc);
 	if (argc > 1)
 	{
+		LPITEMIDLIST pidl = 0;
+		WCHAR *pszPath = argv[1];
 		CoInitialize(NULL);
-		My_SHOpenFolderAndSelectItems(MyILCreateFromPathW(argv[1]), 0, NULL, 0);
+		replace_dquote_to_bslash(pszPath); // so that "C:\" is C:\ not C:"
+		pidl = MyILCreateFromPathW(pszPath);
+		if (pidl)
+		{
+			My_SHOpenFolderAndSelectItems(pidl, 0, NULL, 0);
+			// pidl free automatically when process exit
+		}
 	}
 	else
 	{
@@ -74,10 +95,10 @@ void RawMain(void)
 			pszExeName = &pSlash[1];
 		}
 		wsprintfW(szText,
-			L"Usage: %s <file path>\r\n"
-			L"Example: %s \"C:\\\"",
+			L"Build: " BUILD_TIME L"\n\n"
+			L"See https://github.com/raymai97/OpenFolderAndSelectItem/ for more info.",
 			pszExeName, pszExeName);
-		MessageBoxW(0, szText, pszExeName, MB_ICONWARNING);
+		MessageBoxW(0, szText, pszExeName, MB_ICONASTERISK);
 	}
 	ExitProcess(0);
 }
