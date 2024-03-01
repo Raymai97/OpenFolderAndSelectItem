@@ -1,4 +1,4 @@
-cl -MD -O2 ^
+cl -MD -O1 -GS- ^
 	main.c ^
 	-link ^
 	kernel32.lib ^
@@ -6,4 +6,5 @@ cl -MD -O2 ^
 	ole32.lib ^
 	-out:OpenFolderAndSelect.exe ^
 	-entry:RawMain ^
+	-fixed ^
 	-subsystem:windows
