@@ -6,8 +6,8 @@ Tiny EXE to open folder and select a file/folder in Windows Explorer.
 * Windows XP to Windows 11
 
 ### Tiny overhead
-* ~3KB EXE for 32-bit Windows (i386)
-* ~4KB EXE for 64-bit Windows (AMD64)
+* 3.0KB EXE for 32-bit Windows (i386)
+* 4.5KB EXE for 64-bit Windows (AMD64)
 * No additional DLL/redistribute/runtime needed
 
 ### Easy to use
@@ -25,6 +25,11 @@ OpenFolderAndSelect.exe "C:\Windows\System32\cmd.exe"
 Open "C:\Windows\System32" and select all items where name ended with ".exe".
 ```batch
 OpenFolderAndSelect.exe "C:\Windows\System32\*.exe"
+```
+
+Open "C:\" and select two folders ("Program Files" and "Windows").
+```batch
+OpenFolderAndSelect.exe C:\ "Program Files" Windows
 ```
 
 # Why?
